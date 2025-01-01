@@ -1,0 +1,315 @@
+#1
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+#read csv file
+df = pd.read_csv('/content/drive/MyDrive/DataScienceResources/IRIS_DATASET.csv')
+df.head()
+#select data
+df['5.1']
+#filtering data
+x = df[df['5.1'] > 5].tail()
+filtered_df = pd.DataFrame(x, columns=['5.1'])
+print(filtered_df)
+#filtering missing values
+df.isnull()
+#manipulating data
+df['5.1'].apply(np.sqrt).head()
+df['5.1'].apply(lambda x: x**2).head()
+#sorting
+df.sort_values(by = '5.1', inplace = True)
+#grouping
+group = df[['5.1', '1.4']].groupby('5.1').mean()
+print(group)
+#rearranging data
+pivdf = pd.pivot_table(x, index = ['5.1'], values = ['1.4'])
+print(pivdf.head())
+#ranking
+rankdf = pivdf.rank(axis = 0)
+print(rankdf.head())
+#plotting
+pivdf.plot(kind = 'bar', title = 'Sum')
+plt.show()
+
+#2
+
+file1 = open("/content/drive/MyDrive/DataScienceResources/file1.txt","w")
+L = ["This is Delhi \n","This is Paris \n","This is London \n"]
+file1.writelines(L)
+file1.write("Hello\n")
+file1.close()
+file1 = open("/content/drive/MyDrive/DataScienceResources/file1.txt","r+")
+print("Output of Read function is ")
+print(file1.read())
+file1.seek(0)
+print("Output of readline: ")
+print(file1.readline())
+file1.seek(0)
+print("Output of read(9) function is ")
+print(file1.read(9))
+file1.seek(0)
+print("Output of readline(9) function is ")
+print(file1.readline(9))
+file1.seek(0)
+print("Output of readlines function is ")
+print(file1.readlines())
+file1.close()
+
+# 3. Demonstrate Web Scraping
+import requests
+from bs4 import BeautifulSoup
+url = "https://www.lipsum.com/"
+#try this
+import webbrowser
+webbrowser.open_new_tab(url)
+#or this
+import urllib.request as urllib2
+urllib2.urlopen(url)
+response = requests.get(url)
+soup = BeautifulSoup(response.text, 'html.parser')
+print(soup.get_text())
+
+# 4. Build a model/function that can tell us the prices of the homes with 3300
+sq.ft. and 5000 sq.ft using linear regression, and also plot the above data as a
+scatter plot.
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+df = pd.read_csv('/content/drive/MyDrive/DataScienceResources/house_prices.csv')
+reg = LinearRegression()
+reg.fit(df[['Area']], df.Price)
+print(reg.predict([[3300]]))
+print(reg.predict([[5000]]))
+plt.xlabel('Area')
+plt.ylabel('Price')
+plt.scatter(df.Area, df.Price)
+plt.plot(df.Area, reg.predict(df[['Area']]))
+
+# 5. Plot Mean and Standard Deviation in Pandas for IA1 and IA2 and IA3 Marks.
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+df = pd.DataFrame({
+'IA1': [20,28,29,30,30],
+'IA2': [21,23,26,27,30],
+'IA3': [27,28,22,28,30]
+})
+print(df)
+# Calculate mean and standard deviation
+mean_values = df.mean()
+std_values = df.std()
+# Print mean and standard deviation
+print("\nMean values:")
+print(mean_values)
+print("\nStandard Deviation values:")
+print(std_values)
+# Plot mean
+mean_values.plot(kind='bar', title='Mean Marks')
+plt.xlabel('IA')
+plt.ylabel('Mean')
+plt.show()
+# Plot standard deviation
+std_values.plot(kind='bar', title='Standard Deviation of Marks')
+plt.xlabel('IA')
+plt.ylabel('Standard Deviation')
+plt.show()
+
+# 6. Suppose there are 100 students in the class and in one of the mathematics
+tests the average marks scored by the students in the subject is 78 and the
+standard deviation is 25. The marks of the student follow Normal probability
+distribution. Write a code to find
+# a. Percentage of Students who got less than 60 marks
+# b. Percentage of Students who have scored More than 70
+# c. Percentage of Students who have scored More than 75 and less than 85.
+import numpy as np
+import scipy.stats as stats
+mean = 78
+std = 25
+per_less_than_60 = stats.norm.cdf(60, loc = mean, scale = std) * 100
+print(f"Less than 60: {per_less_than_60:.2f}%")
+per_more_than_70 = (1 - stats.norm.cdf(70, loc = mean, scale = std)) * 100
+print(f"More than 70: {per_more_than_70:.2f}%")
+per_bet_75_and_85 = (stats.norm.cdf(85, loc = mean, scale = std) -
+stats.norm.cdf(75, loc = mean, scale = std)) * 100
+print(f"Between 75 and 85: {per_bet_75_and_85:.2f}%")
+
+# 7. Predict if cancer is Benign or malignant. Using historical data about patients
+diagnosed with cancer enables doctors to differentiate malignant cases and benign
+ones are given independent attributes using SVM.
+from sklearn.datasets import load_breast_cancer
+from sklearn.inspection import DecisionBoundaryDisplay
+from sklearn.svm import SVC
+import matplotlib.pyplot as plt
+cancer = load_breast_cancer()
+x = cancer.data[:, :2]
+y = cancer.target
+svm = SVC(kernel='rbf', C=1.0, gamma=0.5)
+svm.fit(x, y)
+DecisionBoundaryDisplay.from_estimator(
+svm,
+x,
+response_method = "predict",
+#cmap=plt.cm.Spectral,
+#alpha=0.8,
+xlabel = cancer.feature_names[0],
+ylabel = cancer.feature_names[1]
+)
+plt.scatter(x[:, 0], x[:, 1], c=y, s = 20, edgecolors='k')
+plt.show()
+
+
+8. Implement Random Forest Classifier on iris dataset to classify the type of
+flower
+from sklearn import datasets
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn import metrics
+import pandas as pd
+import numpy as np
+iris = datasets.load_iris()
+print(iris.target_names)
+print(iris.feature_names)
+X, y = datasets.load_iris(return_X_y=True)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+data = pd.DataFrame({
+'sepal length':iris.data[:,0],
+'sepal width':iris.data[:,1],
+'petal length':iris.data[:,2],
+'petal width':iris.data[:,3],
+'species':iris.target
+})
+print(data.head())
+clf = RandomForestClassifier(n_estimators=100)
+clf.fit(X_train, y_train)
+y_pred = clf.predict(X_test)
+print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
+clf.predict([[3, 3, 2, 2]])
+feature_imp =
+pd.Series(clf.feature_importances_,index=iris.feature_names).sort_values(ascending=
+False)
+print(feature_imp)
+
+9. A linear regression line has an equation of the form Y = a + bX, where X is
+the explanatory variable and Y is the dependent variable. The slope of the line is
+b, and a is the intercept (the value of y when x = 0).
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+# Data
+x = np.array([1, 2, 3, 4, 5])
+y = np.array([7, 14, 15, 18, 19])
+n = len(x)
+# Step 1: Calculate mean, slope (b1), and intercept (b0)
+xmean, ymean = np.mean(x), np.mean(y)
+Sxy = np.sum(y * x) - n * xmean * ymean
+Sxx = np.sum(x * x) - n * xmean * xmean
+b1 = Sxy / Sxx
+b0 = ymean - b1 * xmean
+print(f"xmean = {xmean}, ymean = {ymean}")
+print(f"Slope (b1) = {b1}, Intercept (b0) = {b0}")
+# Step 2: Plot data and regression line
+plt.scatter(x, y, color="blue", label="Data points")
+plt.plot(x, b1 * x + b0, color="red", label="Regression line")
+plt.xlabel("Independent Variable x")
+plt.ylabel("Dependent Variable y")
+plt.legend()
+plt.show()
+# Step 3: Model evaluation (manual)
+ypred = b1 * x + b0
+mse = mean_squared_error(y, ypred)
+rmse = np.sqrt(mse)
+r2 = r2_score(y, ypred)
+print(f"Mean Squared Error (MSE) = {mse}")
+print(f"Root Mean Squared Error (RMSE) = {rmse}")
+print(f"R^2 = {r2}")
+# Step 4: Verify using sklearn
+x = x.reshape(-1, 1)
+model = LinearRegression()
+model.fit(x, y)
+print(f"Sklearn Slope (b1) = {model.coef_[0]}, Intercept (b0) =
+{model.intercept_}")
+print(f"Sklearn MSE = {mean_squared_error(y, model.predict(x))}")
+print(f"Sklearn R^2 = {r2_score(y, model.predict(x))}")
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load data
+data = pd.read_csv('/content/drive/MyDrive/DataScienceResources/clustering.csv')
+X = data[["LoanAmount", "ApplicantIncome"]]
+
+# Visualize data points
+plt.scatter(X["ApplicantIncome"], X["LoanAmount"], c='black')
+plt.xlabel('Annual Income')
+plt.ylabel('Loan Amount (In Thousands)')
+plt.title('Data Points')
+plt.show()
+
+
+#10
+# K-Means Algorithm
+K = 3  # Number of clusters
+Centroids = X.sample(n=K)  # Initialize centroids
+
+while True:
+    # Assign points to the nearest centroid
+    distances = np.linalg.norm(X.values[:, np.newaxis] - Centroids.values, axis=2)
+    cluster_assignments = np.argmin(distances, axis=1)
+
+    # Update centroids
+    new_centroids = X.groupby(cluster_assignments).mean()
+
+    # Check convergence
+    if new_centroids.equals(Centroids):
+        break
+    Centroids = new_centroids
+colors = ['blue', 'green', 'cyan']
+for k in range(K):
+    cluster_data = X[cluster_assignments == k]
+    plt.scatter(cluster_data["ApplicantIncome"], cluster_data["LoanAmount"], c=colors[k], label=f'Cluster {k+1}')
+plt.scatter(Centroids["ApplicantIncome"], Centroids["LoanAmount"], c='red', marker='X', s=100, label='Centroids')
+plt.xlabel('Annual Income')
+plt.ylabel('Loan Amount (In Thousands)')
+plt.title('K-Means Clustering')
+plt.legend()
+plt.show()
+
+#11
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
+
+# Load dataset and prepare data
+dataset = pd.read_csv('/content/drive/MyDrive/DataScienceResources/data.csv')
+x, y = dataset.iloc[:, 1:2].values, dataset.iloc[:, 2].values
+
+# Linear Regression
+lin_reg = LinearRegression().fit(x, y)
+plt.scatter(x, y, color='red')
+plt.plot(x, lin_reg.predict(x), color='blue')
+plt.title('Linear Regression')
+plt.xlabel('Temperature')
+plt.ylabel('Pressure')
+plt.show()
+
+# Polynomial Regression
+poly_reg = PolynomialFeatures(degree=4)
+x_poly = poly_reg.fit_transform(x)
+lin_reg2 = LinearRegression().fit(x_poly, y)
+plt.scatter(x, y, color='red')
+plt.plot(x, lin_reg2.predict(poly_reg.transform(x)), color='blue')
+plt.title('Polynomial Regression')
+plt.xlabel('Temperature')
+plt.ylabel('Pressure')
+plt.show()
+
+# Prediction
+pred = 110.0
+predarray = np.array([[pred]])
+print(lin_reg.predict(predarray), lin_reg2.predict(poly_reg.transform(predarray)))
+
